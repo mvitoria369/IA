@@ -11,13 +11,13 @@ const perguntas = [
     alternativas: [
       {
         texto: "Isso é assustador!",
-        afirmacao: "No início, ficou com medo do avanço acelerado da tecnologia."
+        afirmacao: "No início ficou com medo do que essa tecnologia pode fazer."
       },
       {
         texto: "Isso é maravilhoso!",
-        afirmacao: "Ficou empolgado com as novas possibilidades trazidas pela tecnologia."
+        afirmacao: "Quis saber como usar IA no seu dia a dia."
       }
-    ],
+    ]
   },
   {
     enunciado:
@@ -31,7 +31,7 @@ const perguntas = [
         texto: "Escreve o trabalho com base nas conversas que teve com colegas, algumas pesquisas na internet e conhecimentos próprios sobre o tema.",
         afirmacao: "Preferiu utilizar métodos tradicionais de pesquisa para desenvolver suas ideias."
       }
-    ],
+    ]
   },
   {
     enunciado:
@@ -45,7 +45,7 @@ const perguntas = [
         texto: "Me preocupo com as pessoas que perderão seus empregos para máquinas e defendo a importância de proteger os trabalhadores.",
         afirmacao: "Se preocupa com o impacto da automação na vida dos trabalhadores."
       }
-    ],
+    ]
   },
   {
     enunciado:
@@ -59,7 +59,7 @@ const perguntas = [
         texto: "Criar uma imagem utilizando um gerador de imagem de IA.",
         afirmacao: "Aproveitou os geradores de imagem para otimizar sua produção artística."
       }
-    ],
+    ]
   },
   {
     enunciado:
@@ -73,13 +73,13 @@ const perguntas = [
         texto: "O chat pode ser uma tecnologia muito avançada, mas é preciso manter a atenção pois toda máquina erra, por isso revisar o trabalho e contribuir com as perspectivas pessoais é essencial.",
         afirmacao: "Entende que a revisão humana e o pensamento crítico são indispensáveis ao usar a IA."
       }
-    ],
-  },
+    ]
+  }
 ];
 
 let atual = 0;
 let perguntaAtual;
-let historiaFinal = "";
+let historicoAfirmacoes = []; // Guarda as escolhas do usuário
 
 function mostraPergunta() {
   if (atual >= perguntas.length) {
@@ -90,6 +90,7 @@ function mostraPergunta() {
   caixaPerguntas.textContent = perguntaAtual.enunciado;
   caixaAlternativas.textContent = "";
   mostraAlternativas();
+  mostraBotaoVoltar();
 }
 
 function mostraAlternativas() {
@@ -102,15 +103,33 @@ function mostraAlternativas() {
 }
 
 function respostaSelecionada(opcaoSelecionada) {
-  const afirmacoes = opcaoSelecionada.afirmacao;
-  historiaFinal += afirmacoes + " ";
+  historicoAfirmacoes.push(opcaoSelecionada.afirmacao); // Adiciona a resposta ao histórico
   atual++;
   mostraPergunta();
 }
 
+function mostraBotaoVoltar() {
+  // Exibe o botão de voltar apenas se não estiver na primeira pergunta
+  if (atual > 0) {
+    const botaoVoltar = document.createElement("button");
+    botaoVoltar.textContent = "← Voltar";
+    botaoVoltar.classList.add("botao-voltar");
+    botaoVoltar.addEventListener("click", voltarPergunta);
+    caixaAlternativas.appendChild(botaoVoltar);
+  }
+}
+
+function voltarPergunta() {
+  if (atual > 0) {
+    atual--;
+    historicoAfirmacoes.pop(); // Remove a última escolha do histórico
+    mostraPergunta();
+  }
+}
+
 function mostraResultado() {
   caixaPerguntas.textContent = "Em 2030...";
-  textoResultado.textContent = historiaFinal;
+  textoResultado.textContent = historicoAfirmacoes.join(" "); // Junta todas as afirmações
   caixaAlternativas.textContent = "";
 }
 
